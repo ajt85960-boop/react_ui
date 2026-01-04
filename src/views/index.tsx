@@ -82,7 +82,6 @@ export default function Index() {
             <div className="flex gap-2 ">
                 <span className="font-bold">
                   每周
-                  每周
                   <span className="text-(--primary)">上新</span>
                 </span>
               <span
@@ -123,9 +122,7 @@ function Item({list}: { list: NewArrival[] }) {
               上新
             </div>
             <img src={BASEURL + item.image_url} alt='' className='w-25 h-25'></img>
-            <img src={BASEURL + item.image_url} alt='' className='w-25 h-25'></img>
             <div className="text-md font-bold px-2 ">
-              <span className="text-xs">￥</span>{Number(item.base_price)}
               <span className="text-xs">￥</span>{Number(item.base_price)}
             </div>
             <span className="w-6.25 h-6.25 absolute bottom-0 right-0 text-xs rounded-full
