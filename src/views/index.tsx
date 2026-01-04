@@ -1,17 +1,44 @@
 import banner from '../assets/banner.png'
-import {item1, item2, item3, item4, item5, right} from '../import.ts'
-import {useState} from "react";
+import {item4, item5, right} from '../import.ts'
+import {useCallback, useEffect, useState} from "react";
 import Menus from "../components/items.tsx";
 import ProductList from "../components/productList.tsx";
+import {getNewList} from "../api/http.ts";
+import {BASEURL} from "../utils/request.ts";
+
+interface NewArrival {
+  "id": number,
+  "category_id": number,
+  "name": string,
+  "description": string,
+  "base_price": string,
+  "is_new_arrival": number,
+  "is_daily_recommend": number,
+  "status": number,
+  "product_id": number,
+  "image_url": string
+}
 
 export default function Index() {
 
+  const [loading, setLoading] = useState(true);
+  const [item, setItem] = useState<NewArrival[]>([])
 
-  const [item] = useState([
-    {img: item1, price: 1200},
-    {img: item2, price: 1500},
-    {img: item3, price: 1300},
-  ])
+  const getItems = useCallback(async () => {
+    try {
+      setLoading(true);
+      const res = await getNewList()
+      const list = res.data as NewArrival[];
+      setItem(list);
+    }
+    finally {
+      setLoading(false);
+    }
+  }, [])
+
+  useEffect(() => {
+    void getItems()
+  }, [getItems])
 
   return (
     <>
@@ -31,7 +58,7 @@ export default function Index() {
             className="relative bg-white pb-3 mt-4 rounded-lg p-2 bg-linear-to-b from-[rgba(191,232,255,0.5)] via-[white] to-[#FFFFFF]">
             <div className="flex gap-2 ">
                 <span className="font-bold">
-                  每日
+                  每周
                   <span className="text-(--primary)">上新</span>
                 </span>
               <span
@@ -44,7 +71,11 @@ export default function Index() {
                   <span className="text-[#FFEB3B]">新品特惠</span>
                   <span className="text-[#FFFFFF]"> 查看更多</span>
               </span>
-            <Item list={item}/>
+            {
+              loading
+                ? <div>loading</div>
+                : <Item list={item}/>
+            }
           </div>
 
           <div className="flex justify-around mt-4">
@@ -57,12 +88,7 @@ export default function Index() {
   )
 }
 
-interface ItemProps {
-  img: string,
-  price: number
-}
-
-function Item({list}: { list: ItemProps[] }) {
+function Item({list}: { list: NewArrival[] }) {
   return <>
     <div className="flex justify-between mt-2">
       {
@@ -72,16 +98,16 @@ function Item({list}: { list: ItemProps[] }) {
                     bg-linear-to-r from-[#12A8FF] to-[#55f283]">
               上新
             </div>
-            <img src={item.img} alt='' className='w-25 h-25'></img>
+            <img src={BASEURL + item.image_url} alt='' className='w-25 h-25'></img>
             <div className="text-md font-bold px-2 ">
-              <span className="text-xs">￥</span>{item.price}
+              <span className="text-xs">￥</span>{Number(item.base_price)}
             </div>
             <span className="w-6.25 h-6.25 absolute bottom-0 right-0 text-xs rounded-full
                   border border-amber-500 text-[#DB6E00]
                   flex items-center justify-center rounded-bl-md
                   bg-linear-to-r from-[#F0C686] to-[#FFE9C4] font-bold">
-       抢
-     </span>
+              抢
+            </span>
           </div>
         ))
       }

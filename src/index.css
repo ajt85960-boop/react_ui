@@ -7,3 +7,29 @@ body {
     background: #F7F7F7;
 }
 
+
+/* 遮罩层淡入淡出 */
+.backdrop-fade {
+    transition: opacity 0.3s ease;
+}
+
+/* 弹出层核心动画 */
+.popup-container {
+    transition: transform 0.3s ease-out;
+    transform: translateY(100%); /* 默认在底部看不见的地方 */
+}
+
+.popup-show {
+    transform: translateY(0); /* 向上滑入 */
+}
+
+.profile-bg {
+    position: fixed;
+    left: 80px;
+    top: -125px;
+    width: 328px;
+    height: 328px;
+    opacity: 1;
+    background: rgba(21, 172, 251, 0.3);
+    filter: blur(150px);
+}
